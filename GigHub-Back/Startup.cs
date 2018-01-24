@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using GigHubBack.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace GigHub_Back
 {
@@ -30,6 +32,20 @@ namespace GigHub_Back
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            // + Enable CORS (refer: https://docs.microsoft.com/en-us/aspnet/core/security/cors)
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +56,7 @@ namespace GigHub_Back
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("AllowAll");
             app.UseMvc();
             app.UseStatusCodePages();
             app.UseDeveloperExceptionPage();
