@@ -5,7 +5,10 @@ namespace GigHubBack.Models
 {
     public class AppUser : IdentityUser
     {
-        // no additional members are required
-        // for basic Identity installation
+        // Extended Properties
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public long? FacebookId { get; set; }
+        public string PictureUrl { get; set; }
     }
 }

@@ -7,5 +7,7 @@ namespace GigHubBack.Models
     {
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
             : base(options) { }
+
+        public DbSet<Customer> Customers { get; set; }
     }
 }
