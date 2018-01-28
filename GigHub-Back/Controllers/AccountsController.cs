@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace GigHubBack.Controllers
 {
     [Route("api/[controller]")]
-    public class AdminController : Controller
+    public class AccountsController : Controller
     {
         private UserManager<AppUser> userManager;
 
-        public AdminController(UserManager<AppUser> usrMgr)
+        public AccountsController(UserManager<AppUser> usrMgr)
         {
             userManager = usrMgr;
         }
