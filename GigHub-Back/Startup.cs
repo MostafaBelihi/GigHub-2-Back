@@ -8,7 +8,7 @@ using GigHubBack.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
-namespace GigHub_Back
+namespace GigHubBack
 {
     public class Startup
     {
