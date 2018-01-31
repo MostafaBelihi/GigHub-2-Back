@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GigHubBack.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("auth")]
     public class AuthController : Controller
     {
         private UserManager<AppUser> userManager;
@@ -17,8 +18,8 @@ namespace GigHubBack.Controllers
             userManager = usrMgr;
         }
 
-        [HttpGet]
-        public IEnumerable<AppUser> Get()
+        [HttpGet("getUsers")]
+        public IEnumerable<AppUser> GetUsers()
         {
             return userManager.Users;
         }
