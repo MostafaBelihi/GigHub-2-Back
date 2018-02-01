@@ -35,8 +35,6 @@ namespace GigHubBack.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<long?>("FacebookId");
-
                     b.Property<string>("FirstName");
 
                     b.Property<string>("LastName");
@@ -56,8 +54,6 @@ namespace GigHubBack.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("PictureUrl");
 
                     b.Property<string>("SecurityStamp");
 
