@@ -47,22 +47,15 @@ namespace GigHubBack.Controllers
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);     // encode token
 
                 packet.Token = encodedJwt;
+                packet.FirstName = regsiter.User.FirstName;
                 packet.IsError = false;
             }
             else
             {
-                packet.Token = "";
                 packet.IsError = true;
             }
 
             return packet;
         }
-    }
-
-    // Token carrier
-    public class JwtPacket
-    {
-        public string Token { get; set; }
-        public bool IsError { get; set; }
     }
 }
