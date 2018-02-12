@@ -16,9 +16,13 @@ namespace GigHubBack.Controllers
         private UserManager<AppUser> _userManager;
         private AppIdentityDbContext _context;
 
-        public AuthController(UserManager<AppUser> usrMgr, AppIdentityDbContext context)
+        // + Dependency Injection (DI)
+        public AuthController(
+            UserManager<AppUser> userManager, 
+            AppIdentityDbContext context
+        )
         {
-            _userManager = usrMgr;
+            _userManager = userManager;
             _context = context;
         }
 
@@ -31,9 +35,6 @@ namespace GigHubBack.Controllers
         [HttpPost("register")]
         public async Task<JwtPacket> Register([FromBody]RegisterDto regsiter)
         {
-            // Prepare response object
-            var packet = new JwtPacket();
-
             // Add new user
             var result = await _userManager.CreateAsync(regsiter.User, regsiter.Password);
 
@@ -41,18 +42,42 @@ namespace GigHubBack.Controllers
             {
                 // Save
                 await _context.SaveChangesAsync();
+                return CreateJwtPacket(regsiter.User, false);
+            }
+            else
+            {
+                return CreateJwtPacket(regsiter.User, true);
+            }
+        }
 
+        [HttpPost("login")]
+        public async Task<JwtPacket> Login([FromBody]LoginDto login)
+        {
+            // + Check existence of the user using UserManager class
+            AppUser user = await _userManager.FindByNameAsync(login.UserName);
+
+            // + There is no need for SignInManager as of the reference PDF-1. 
+            // + We will just use the check and authenticate following JWT method in V-4
+            if (user != null)
+                return CreateJwtPacket(user, false);
+            else
+                return CreateJwtPacket(user, true);
+        }
+
+        private JwtPacket CreateJwtPacket(AppUser user, bool isError)
+        {
+            var packet = new JwtPacket();
+
+            packet.IsError = isError;
+
+            if (!isError)
+            {
                 // Create token
                 var jwt = new JwtSecurityToken();       // create token
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);     // encode token
 
                 packet.Token = encodedJwt;
-                packet.FirstName = regsiter.User.FirstName;
-                packet.IsError = false;
-            }
-            else
-            {
-                packet.IsError = true;
+                packet.FirstName = user.FirstName;
             }
 
             return packet;
