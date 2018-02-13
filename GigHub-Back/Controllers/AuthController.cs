@@ -33,7 +33,7 @@ namespace GigHubBack.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<JwtPacket> Register([FromBody]RegisterDto regsiter)
+        public async Task<ActionResult> Register([FromBody]RegisterDto regsiter)
         {
             // Add new user
             var result = await _userManager.CreateAsync(regsiter.User, regsiter.Password);
@@ -42,16 +42,16 @@ namespace GigHubBack.Controllers
             {
                 // Save
                 await _context.SaveChangesAsync();
-                return CreateJwtPacket(regsiter.User, false);
+                return Ok(CreateJwtPacket(regsiter.User));
             }
             else
             {
-                return CreateJwtPacket(regsiter.User, true);
+                return BadRequest();
             }
         }
 
         [HttpPost("login")]
-        public async Task<JwtPacket> Login([FromBody]LoginDto login)
+        public async Task<ActionResult> Login([FromBody]LoginDto login)
         {
             // + Check existence of the user using UserManager class
             AppUser user = await _userManager.FindByNameAsync(login.UserName);
@@ -59,28 +59,18 @@ namespace GigHubBack.Controllers
             // + There is no need for SignInManager as of the reference PDF-1. 
             // + We will just use the check and authenticate following JWT method in V-4
             if (user != null)
-                return CreateJwtPacket(user, false);
+                return Ok(CreateJwtPacket(user));
             else
-                return CreateJwtPacket(user, true);
+                return BadRequest();
         }
 
-        private JwtPacket CreateJwtPacket(AppUser user, bool isError)
+        private JwtPacket CreateJwtPacket(AppUser user)
         {
-            var packet = new JwtPacket();
+            // Create token
+            var jwt = new JwtSecurityToken();       // create token
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);     // encode token
 
-            packet.IsError = isError;
-
-            if (!isError)
-            {
-                // Create token
-                var jwt = new JwtSecurityToken();       // create token
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);     // encode token
-
-                packet.Token = encodedJwt;
-                packet.FirstName = user.FirstName;
-            }
-
-            return packet;
+            return new JwtPacket { Token = encodedJwt, FirstName = user.FirstName };
         }
     }
 }

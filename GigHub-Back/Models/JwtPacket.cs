@@ -6,6 +6,5 @@ namespace GigHubBack.Models
     {
         public string Token { get; set; }
         public string FirstName { get; set; }
-        public bool IsError { get; set; }
     }
 }
